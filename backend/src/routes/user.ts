@@ -33,7 +33,10 @@ try{
     }
     });
     const jwt = await sign(user,c.env.JWT_SECRET);
-    return c.text(jwt);
+    return c.json({
+        token : jwt,
+        id : user.id
+    })
 }
 catch(e){
 
@@ -68,7 +71,10 @@ try{
     return c.json({error : "Incorrect credentials"},403);
     }
     const jwt = await sign({id: user.id},c.env.JWT_SECRET);
-    return c.text(jwt);
+    return c.json({
+        token : jwt,
+        id : user.id
+    });
 }
 catch(e){
     console.log(e);
@@ -76,3 +82,6 @@ catch(e){
     return c.text("User not found");
 }
 })
+
+
+
