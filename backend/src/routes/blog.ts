@@ -56,7 +56,7 @@ blogRouter.post('/', async (c) => {
             data : {
                  title : title,
                  content : content,
-                 authorId : authorId
+                 authorId : authorId,
             }
         }) 
         return c.json({
@@ -152,6 +152,7 @@ blogRouter.get('/bulk', async (c) => {
 
     const blogPosts = await prisma.post.findMany({
         select: {
+            createdAt : true,
             content: true,
             title: true,
             id: true,
@@ -181,6 +182,7 @@ blogRouter.get("/profile", async (c) => {
         const userPosts = await prisma.post.findMany({
             where : { authorId : userId },
             select: {
+                createdAt : true,
                 content: true,
                 title: true,
                 id: true,
@@ -213,6 +215,7 @@ blogRouter.get('/:id', async(c) => {
                 id
             },
             select: {
+                createdAt : true,
                 id: true,
                 title: true,
                 content: true,

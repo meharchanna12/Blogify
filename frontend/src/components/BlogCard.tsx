@@ -8,10 +8,10 @@ interface BlogCardProps {
     authorName : string;
     title : string;
     content : string;
-    publishedDate : string;
+    createdAt : string;
     id : string
 }
-export default function BlogCard({authorId,authorName,title,content,publishedDate,id} : BlogCardProps){
+export default function BlogCard({authorId,authorName,title,content,createdAt,id} : BlogCardProps){
     const navigate = useNavigate();
     const userId = localStorage.getItem("id");
     console.log('userId : ' , userId);
@@ -82,7 +82,7 @@ export default function BlogCard({authorId,authorName,title,content,publishedDat
                 <Circle />
             </div>
             <div className="font-thin pl-2 text-slate-500 mb-2 text-sm">
-                {publishedDate}
+                {createdAt}
             </div>
                 
         </div>

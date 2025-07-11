@@ -44,7 +44,9 @@ export default function Publish() {
       if (res.status >= 200 && res.status < 300) {
         toast.success("Blog published successfully!");
         setTitle("");
-        setContent("");
+        setContent("")
+        setTimeout(()=>navigate('/blogs'),2000);
+        
       } else {
         toast.error("Failed to publish blog.");
       }

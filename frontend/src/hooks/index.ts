@@ -89,7 +89,12 @@ export const useBlogs = ()=>{
     useEffect(() =>{
         async function fetchBlogs() {
             try{
-                const response = await axios.get(`${BACKEND_URL}/api/v1/blog/bulk`);
+                const token = localStorage.getItem("token");
+                const response = await axios.get(`${BACKEND_URL}/api/v1/blog/bulk`,{
+                    headers : {
+                        Authorization : `Bearer ${token}`
+                    }
+                });
                 console.log(response.data.posts);
                 setBlogs(response.data.posts);
                 setLoading(false);
