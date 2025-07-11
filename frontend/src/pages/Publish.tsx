@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { ToastContainer, toast } from "react-toastify";
@@ -7,6 +7,7 @@ import axios from "axios";
 import DOMPurify from "dompurify"; 
 import { BACKEND_URL } from "../config";
 import Appbar from "../components/Appbar";
+import { useNavigate } from "react-router-dom";
 
 export default function Publish() {
   const [content, setContent] = useState("");
@@ -52,10 +53,22 @@ export default function Publish() {
       toast.error("Something went wrong.");
     }
   };
+  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!token) {
+      toast.warning("Login to view this page");
+      const timeout = setTimeout(() => {
+        navigate("/signin");
+      }, 2000); 
+      return () => clearTimeout(timeout);
+    }
+  }, [token, navigate]);
   
   return (
     <div>
       <Appbar />
+      {token && 
       <div className="max-w-4xl mx-auto px-4 py-8">
         <ToastContainer position="top-right" autoClose={3000} />
 
@@ -99,6 +112,7 @@ export default function Publish() {
           Publish
         </button>      
       </div>
+    }
     </div>
   );
 }

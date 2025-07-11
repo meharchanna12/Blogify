@@ -12,38 +12,6 @@ export const blogRouter = new Hono<{
         userId: string
     }
 }>()
-//add-pagination
-blogRouter.get('/bulk', async (c) => {
-    const prisma = new PrismaClient({
-        datasourceUrl: c.env?.DATABASE_URL,
-    }).$extends(withAccelerate())
-    const page =  Number(c.req.query('page') || "1");
-    const limit = Number(c.req.query('limit') || "10");
-    const startingIndex = limit*(page-1);
-    const lastIndex = startingIndex+limit;
-    
-    const totalPosts = await prisma.post.count();
-
-    const blogPosts = await prisma.post.findMany({
-        select: {
-            content: true,
-            title: true,
-            id: true,
-            author: {
-                select: {
-                    name: true,
-                    id : true
-                }
-            }
-        }
-    });
-    const paginatedPosts = blogPosts.slice(startingIndex,lastIndex);
-    return c.json({
-        posts: paginatedPosts,
-    });
-    
-})
-
 
 blogRouter.use("/*", async (c, next) =>{
     const authHeader = c.req.header("authorization")||"";
@@ -84,8 +52,6 @@ blogRouter.post('/', async (c) => {
     }
     try{
         const authorId = c.get("userId");
-
-
         const blogPost = await prisma.post.create({
             data : {
                  title : title,
@@ -172,6 +138,36 @@ blogRouter.delete('/:id', async (c)=>{
         })
     }
 
+})
+blogRouter.get('/bulk', async (c) => {
+    const prisma = new PrismaClient({
+        datasourceUrl: c.env?.DATABASE_URL,
+    }).$extends(withAccelerate())
+    const page =  Number(c.req.query('page') || "1");
+    const limit = Number(c.req.query('limit') || "10");
+    const startingIndex = limit*(page-1);
+    const lastIndex = startingIndex+limit;
+    
+    const totalPosts = await prisma.post.count();
+
+    const blogPosts = await prisma.post.findMany({
+        select: {
+            content: true,
+            title: true,
+            id: true,
+            author: {
+                select: {
+                    name: true,
+                    id : true
+                }
+            }
+        }
+    });
+    const paginatedPosts = blogPosts.slice(startingIndex,lastIndex);
+    return c.json({
+        posts: paginatedPosts,
+    });
+    
 })
 blogRouter.get("/profile", async (c) => {
     const userId = c.get("userId");

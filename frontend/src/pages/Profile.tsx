@@ -1,14 +1,28 @@
 
+import { useNavigate } from "react-router-dom";
 import Appbar from "../components/Appbar";
 import BlogCard from "../components/BlogCard";
 import BlogSkeleton from "../components/BlogSkeleton";
 import { useBlogs2 } from "../hooks";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 
 export default function Profile(){
     const  { loading,blogs } = useBlogs2();
+    const token = localStorage.getItem("token");
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (!token) {
+          toast.warning("Login to view this page");
+          const timeout = setTimeout(() => {
+            navigate("/signin");
+          }, 2000); 
+          return () => clearTimeout(timeout);
+        }
+      }, [token, navigate]);
     if(loading) {
-        return <div className="flex justify-center flex-col">
+        return <div className="mt-22 flex justify-center flex-col">
                 <div className="flex justify-center">
                 <BlogSkeleton />
                 </div>
@@ -27,8 +41,9 @@ export default function Profile(){
     return (
         <div>
             <Appbar />
-        <div className="flex justify-center">
-            
+        {token && 
+            <div className="flex justify-center">
+    
             <div className="max-w-xl">
             {Array.isArray(blogs) && blogs.length > 0 ? (
                 blogs.map((blog) => (
@@ -47,6 +62,8 @@ export default function Profile(){
 
             </div>
         </div>
+        }
+
         </div>
 
     )

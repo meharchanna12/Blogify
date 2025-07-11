@@ -2,6 +2,7 @@ import { Circle } from "./BlogCard";
 
 export default function BlogSkeleton() {
   return (
+    <div className="w-full flex justify-center">
     <div role="status" className="w-full max-w-xl animate-pulse p-4 rounded-xl shadow-sm">
       <div className="flex items-center space-x-3 mb-4">
         {/* Avatar Circle */}
@@ -31,6 +32,7 @@ export default function BlogSkeleton() {
       </div>
 
       <span className="sr-only">Loading...</span>
+    </div>
     </div>
   );
 }

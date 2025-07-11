@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { ToastContainer, toast } from "react-toastify";
@@ -10,11 +10,24 @@ import Appbar from "../components/Appbar";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function EditPost(){
+    const toastShownRef = useRef(false); 
+    const [tokenChecked, setTokenChecked] = useState(false);
     const { id } = useParams();
     console.log("EditPost ID from URL:", id);
     const navigate = useNavigate();
     const [content, setContent] = useState("");
     const [title, setTitle] = useState("");
+    const token = localStorage.getItem("token");
+    useEffect(() => {
+      if (!token) {
+        toast.warning("Login to view this page");
+        const timeout = setTimeout(()=>navigate('/signin'),2000)
+        return () => clearTimeout(timeout);
+        
+      }else{
+        setTokenChecked(true)
+      }
+    }, [token, navigate]);
     useEffect(()=>{
       async function fetchBlogs(){
         try{
@@ -32,13 +45,18 @@ export default function EditPost(){
 
         } catch (err){
           console.log(err);
-          toast.error("Failed to load blog"); 
+          if (!toastShownRef.current) {
+            toastShownRef.current = true;
+            toast.error("Failed to load blog");
+          }
         }
 
 
       }
-      fetchBlogs();
-    },[id]);
+      if (tokenChecked && token) {
+        fetchBlogs();
+      }
+    },[id,token,tokenChecked]);
     const handleSubmit = async () => {
       if (!title || !content) {
         toast.error("Title and content are required!");
@@ -85,8 +103,8 @@ export default function EditPost(){
   return (
     <div>
       <Appbar />
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <ToastContainer position="top-right" autoClose={3000} />
+      {token && 
+        <div className="max-w-4xl mx-auto px-4 py-8">
 
         <h1 className="text-2xl font-extrabold mb-4">✍️ Edit Post</h1>
 
@@ -128,6 +146,8 @@ export default function EditPost(){
           Edit
         </button>      
       </div>
+      }
+      
     </div>
   );
 }
