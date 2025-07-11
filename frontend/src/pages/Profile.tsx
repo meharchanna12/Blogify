@@ -52,7 +52,7 @@ export default function Profile(){
                     authorName={blog.author.name}
                     title={blog.title}
                     content={blog.content}
-                    createdAt={"Friday, 11th July"}
+                    createdAt={blog.createdAt}
                     id={blog.id}
                     />
                 ))
